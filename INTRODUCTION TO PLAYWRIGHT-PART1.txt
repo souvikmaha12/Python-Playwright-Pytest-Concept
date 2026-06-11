@@ -1,0 +1,149 @@
+INTRODUCTION TO PLAYWRIGHT-PART1
+-------------------------------------
+1->Playwright is a tool used foe=r Automation Testing of website
+2->Through Playwright we can test a particular website , handles dropdown, take screenshot and many more.
+3->Playwright supports python, java, typescript, javascript and many more.
+4->Playwright is modern way of Automation Testing
+
+INSTALLATION OF PLAYWRIGHT
+-------------------------------
+1->pip install pytest-playwright
+2->pip install playwright
+3->playwright install
+
+
+SYNTAX OF PLAYWRIGHT
+-------------------------
+import pytest
+from playwright.sync_api import Page,expect
+
+def test_url(page:Page):
+page.goto("www.google.com")
+expect(page).to_have_url("www.google.com")
+expect(page).to_have_title("google")
+url=page.url;
+title=page.title()
+print(url)
+print(title)
+
+
+
+PLAYWRIGHT BUILT-IN LOCATORS
+---------------------------------
+1->to_have_url():To check the url 
+2->to_have_title():To check the title of the page
+3->to_have_text():To check text is present
+4->to_have_count():To check the count
+5->get_by_alt_text():To get the image text
+6->get_by_text():To get the text
+7->get_by_label():To get input or other field by label
+8->get_by_placeholder():To locate element by placeholder
+9->get_by_title():To get the title
+10->get_by_test_id():To locate element by id
+11->get_by_roll():To locate element by roll
+12->count():To count element
+
+EXAMPLES:
+
+1->import pytest
+from playwright.sync.api import Page,expect
+
+def test_web(page:Page):
+page.goto("www.google.com")
+url=page.url
+title=page.title()
+expect(url).to_have_url("www.google.com")
+expect(title).to_have_title("google")
+roll=page.get_by_roll(roll:"heading" name: "logocart")
+expect(roll).to_be_visible()
+page.wait_for_timeout(4000)
+
+
+def test_web1(page:Page):
+page.goto("www.google.com")
+text=page.get_by_text("email has name")
+expect(text).to_be_visible()
+logo=page.get_by_alt_text("logo image")
+expect(logo).to_be_visible()
+page.wait_for_timeout(4000)
+
+
+def test_input(page:Page):
+page.goto("www.flipkart.com")
+first=page.get_by_label("name")
+mail=page.get_by_label("email")
+pass=page.get_by_placeholder("password")
+expect(first).to_be_enabled()
+expect(first).to_be_visible()
+expect(mail).to_be_visible()
+expect(mail).to_be_enabled()
+expect(pass).to_be_visible()
+expect(pass).to_be_enabled()
+
+first.fill("john")
+mail.fill("so@gmail.com")
+pass.fill("1234@34")
+
+print(first.input_value())
+print(mail.input_value())
+print(pass.input_value())
+
+page.wait_for_timeout(5000)
+
+
+
+
+
+PLAYWRIGHT CSS AND XPATH LOCATOR
+---------------------------------------
+
+To locate we use page.locator().
+
+EXAMPLES(CSS LOCATOR):
+-------------------------------
+import pytest
+from playwright.sync_api import Page, expect
+
+
+def test_web(page:Page):
+page.goto("www.amazon.com")
+#input=page.locator("input#name")
+#input=page.locator("input.name1")
+#input=page.locator("input[@id='name']")
+#input=page.locator("input.name1[@id="'name']")
+input.fill("john")
+expect(input).to_be_enabled()
+expect(input).to_have_attribute("text")
+att=input.get_attribute()
+print(att)
+print(input.input_value())
+page.wait_for_timeout(5000)
+
+
+
+
+EXAMPLES(XPATH LOCATOR)
+---------------------------------
+import pytest
+from playwright.sync_api import Page, expect
+
+
+def test_web(page:Page):
+page.goto("www.amazon.com")
+page.locator("//input[@id='name' or @placeholder='text']").fill("john")
+page.locator("//input[@id='email' and @placeholder='text']").fill("so@gmail.com")
+link=page.locator("//h2//a[contains('@href','computer')]")
+link_count=link.count()
+print(link_count)
+text1=link.first.text_content()
+text2=link.last.text_content()
+print(text1)
+print(text2)
+text=link.all_text_contents()
+for i in text:
+print(i)
+
+page.locator("//h2[text()='paragraph']").to_be_visible()
+button=page.locator("//h2[contains('text()','paragraph']")
+button.click()
+
