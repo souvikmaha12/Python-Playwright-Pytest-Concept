@@ -1,0 +1,165 @@
+INTRODUCTION OF PYTEST
+---------------------------
+1-> Pytest is a testing Framework
+2-> Pytest is used for testing the website and to check how many test cases are passed.
+3-> Pytest is used for Automation Testing of websites.
+4-> Pytest is used in python and to used it we need to import pytest by writing import pytest.
+
+INSTALLATION OF PYTEST
+----------------------------
+To install pytest we need to write following command:
+
+1-> pip install pytest
+2-> pip install pytest-ordering(For ordering of test)
+3-> pip install pytest-xdist
+
+
+RUNNING OF PYTEST PROGRAM
+-------------------------------
+To run pytest coding:
+[headless mode]
+> pytest directoryname\filename -s -v
+
+[headed mode]
+> pytest directoryname\filename -s -v --headed
+
+[To run specific function]
+> pytest directoryname\filename:[functionname] -s -v --headed
+
+[To run parallel testing]
+> pytest directoryname\filename -s -v --headed --browser firefox --browser chromium
+> pytest directoryname\filename:[functionname] -s -v --headed --browser edge --browser chromium
+> pytest directoryname\filename -s -v --headed n=2
+
+
+
+
+
+
+SYNTAX OF OF PYTEST 
+-------------------------
+To make pile in pytest follow proper name-->test_[filename].py
+
+1->import pytest
+
+def test_setup():
+print("setup Environment")
+
+def test_login1():
+print("Login by email")
+
+def test_login2():
+print("Login by facebook")
+
+2-> import pytest
+
+class testing:
+
+def __init__(self,name,age):
+self.name=name
+self.age=age
+
+def name(self):
+print(name is{self.name})
+
+t1=testing("souvik","25")
+t1.name()
+
+In pytest we need not need to call that class. Pytest run automatically.
+
+
+PYTEST FIXTURES
+---------------------
+Fixtures is used for reusability of code in all function.In fixture if we want to run other method, before running that method we need to run that fixture method first then only we can run other methods.
+
+import pytest
+
+@pytest.fixture
+def test_setup():
+print("Setting environment")
+
+def test_login1(test_setup):
+print("login by email")
+
+def test_login2(test_setup):
+print("Login by facebook")
+
+def test_login2():
+print("login by twitter")
+
+
+To write this fixture common we need to make a file named conftest.py where we need to write @pytest.fixture() and then that common def_method name and that same we can used it in other python file .But that common file name should be same not different.
+
+
+PYTEST SKIP FUNCTION METHOD
+-------------------------------
+We can skip some method in pytest also . Examples
+
+import pytest
+
+@pytest.fixture
+def test_setup():
+print("Setting environment")
+
+@pytest.mark.skip
+def test_login1():
+print("login by email")
+
+@pytest.mark.skip
+def test_login2():
+print("login by facebook")
+
+def test_login3(test_setup):
+print("login by twitter")
+
+
+
+PYTEST GROUPING FUNCTION METHOD
+-----------------------------------
+We can also group some method to run in pytest. If we want to run 5 test out of 10 we can group that functions.Examples
+
+import pytest
+
+@pytest.mark.sanity
+def test_setup():
+print("Setting environment")
+
+@pytest.mark.regression
+def test_login1():
+print("Login by email")
+
+@pytest.mark.sanity
+def test_login2():
+print("Login by facebook")
+
+After that we need to make another ini file named-->[filename].ini
+
+[pytest]
+
+markers=
+sanity
+regression
+
+To run this grouping :
+1-> pytest directoryname\filename -s -v -m "sanity"
+2-> pytest directoryname\filename -s -v -m "sanity and regression"
+3-> pytest directoryname\filename -s -v -m "sanity" -m "not regression"
+
+
+PYTEST ORDERING
+------------------
+We can run all the functions according to order in python.
+
+import pytest
+
+@pytest.mark.order(1)
+def test_setup():
+print("Setting Environment")
+
+@pytest.mark.order(2)
+def test_login1():
+print("login by facebook")
+ 
+
+
+
