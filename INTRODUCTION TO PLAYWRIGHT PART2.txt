@@ -1,0 +1,239 @@
+INTRODUCTION TO PLAYWRIGHT PART2
+----------------------------------------
+RADIO AND CHECKBOX SELECTION 
+-------------------------------------
+In playwright we can select checkbox, radio button by using locator(), list[] functions. Few examples are:
+
+import pytest
+from playwright import Page, expect, sync_playwright
+
+def test_radio(page:Page):
+page.goto("www.google.com")
+
+radio=page.locator("#main")
+expect(radio).to_be_visible()
+expect(radio).to_be_enabled()
+expect(radio).not_to_be_checked()
+radio.check()
+expect(radio).to_be_checked()
+page.wait_for_timeout(3000)
+
+def test_checkbox(page:Page):
+page.goto("www.google.com")
+list=["sunday","Monday","Tuesday","Wednesday","Thursday","Friday"]
+list1=[]
+for i in list:
+check=page.get_by_label(i)
+list1.append[check]
+
+print(list1)
+
+for ch in list1:
+ch.check()
+expect(ch).to_be_checked()
+
+for ch in list1[-3:]:
+ch.uncheck()
+expect(ch).not_to_be_checked()
+
+
+for ch in list1:
+if ch.is_checked():
+ch.uncheck()
+expect(ch).not_to_be_checked()
+else:
+ch.check()
+expect(ch).to_be_checked()
+
+
+ind=[1,5,3]
+for i in ind:
+list1[i].check()
+expect(list1[i]).to_be_checked()
+page.wait_for_timeout(3000)
+
+
+week="Thursday"
+for i in list:
+if i==week:
+loc=page.get_by_label(i)
+loc.check()
+expect(loc).to_be_checked()
+
+
+
+
+
+DROPDOWN SELECTION
+--------------------------
+Dropdown are of 2 types:
+1->SINGLE SELECT DROPDOWN: We can select single dropdown
+
+2->MULTI-SELECT DROPDOWN: We can select multiple dropdown
+
+3->BOOTSTRAP DROPDOWN:We can select hidden dropdown
+
+ EXAMPLES:(SINGLE DROPDOWN)
+-----------------------
+ import pytest
+from playwright import sync_playwright, Page,expect
+
+def test_single(page:Page):
+page.goto("www.amazon.com")
+#page.locator("#colors").select_option("red")
+#page.locator("#colors").select_option(label="red")
+#page.locator("#cplors").select_option(index=2)
+
+loc=page.locator("#colors>option")
+count=loc.count()
+print(count)
+'''
+text=[]
+
+expect(loc).to_have_count(count)
+for i in loc.all_text_contents():
+text.append(i.script())
+'''
+
+text=[i.script for i in loc.all_text_content()]
+print(text)
+
+for i in text:
+print(i)
+
+
+
+
+
+EXAMPLES(MULTIPLE DROPDOWN)
+-------------------------------------
+import pytest
+from playwright import sync_playwright, Page, expect
+
+def test_multiple(page:Page):
+page.goto("www.flipkart.com")
+#page.locator("#colors").select_option(["sunday","monday","tuesday","wednesday"])
+#page.locator("#colors").select_option(label=["sunday","monday","tuesday"])
+#page.locator("#colors").select_option(index=[2,3])
+page.wait_for_timeout(3000)
+
+
+def test_single(page:Page):
+page.goto("www.amazon.com")
+list1=page.locator("#colors>option")
+list2=[]
+for i in list1.all_text_contents():
+list2.append(i.strip())
+
+sorted(list2)
+print(list1)
+print(list2)
+
+if(list1==list2):
+print("sorted order")
+else:
+print("unsorted order")
+page.wait_for_timeout(4000)
+
+
+
+
+EXAMPLES(BOOTSTRAP DROPDOWN)
+--------------------------------------------
+import pytest
+from playwright.sync_api import Page, expect, sync_playwright
+
+def test_bootstrap(page:Page):
+page.goto("www.flipkart.com")
+
+options=page.locator("form i")
+options.nth(3).click()
+count=options.count()
+expect(options).to_have_count(count)
+
+print(count)
+page.wait_for_timeout(3000)
+
+for i in range(count):
+print(options.nth(i).all_text_contents())
+
+
+for i in range(count):
+text=options.nth(i).inner_text()
+print(text)
+if(text=="Finance"):
+options.nth(i).click()
+break;
+
+page.wait_for_timeout(4000)
+
+
+
+
+DIFFERENCE BETWEEN INNER_TEXT() AND TEXT_CONTENT()
+----------------------------------------------------------------
+INNER_TEXT():It prints only a particular dropdown No extra character and hidden dropdown.
+TEXT_CONTENT():It prints dropdown along with all extra characters present. To remove that we use strip()
+
+
+EXAMPLES
+---------------------------
+import pytest
+from playwright.sync_api import Page, expect, sync_playwright
+
+def test_comparision(page:Page):
+page.goto("www.amazon.com")
+product=page.locator(".pro-tit")
+
+print(product.nth(1).inner_text())
+print(product.nth(1).text_content())
+
+count=product.count()
+for i in range(count):
+name=product.nth(i).text_content()
+#print(name)
+print(name.strip())
+
+name=product.nth(i).inner_text()
+print(name)
+
+
+
+ALL_TEXT_CONTENTS() AND ALL_INNER_TEXTS()
+----------------------------------------------------------------------
+import pytest
+from playwright.sync_api import Page, expect, sync_playwright
+
+def test_comparision(page:Page):
+page.goto("www.amazon.com")
+product=page.locator(".pro-tit")
+
+name=product.all_text_contents()
+print(name)
+name=product.all_inner_texts()
+print(name)
+trim=[]
+for i in name:
+trim.append(i.strip())
+
+print(trim)
+
+
+ALL()FUNCTION 
+-------------------------
+It is used for providing all locators
+import pytest
+from playwright.sync_api import Page, expect, sync_playwright
+
+def test_comparision(page:Page):
+page.goto("www.amazon.com")
+product=page.locator(".class").all()
+product[0].click()
+
+for p in product:
+p.click()
+p.go_back()
+p.wait_for_timeout(4000)
+
+Why go_back() is used?
+Ans-->If we want to go to back url we use.Similar to back button in chrome. If same url no use of this go_back()
