@@ -1,0 +1,101 @@
+INTRODUCTION TO PLAYWRIGHT-PART3
+----------------------------------------------
+HANDLING TABLES IN WEB PAGES
+-------------------------------------------
+There are 3 types of tables to handle
+-----------------------------------------------
+1-->STATIC WEB TABLES: Here web tables are static. No change in data
+
+2-->DYNAMIC WEB TABLES: Here web tables are dymanic. Data always change after refresh
+
+3-->PAGINATION WEB TABLES: Here web tables are devided into many pages. We need to navigate by clicking 1,2,3 button below the table to handle
+
+
+STATIC WEB TABLE(EXAMPLES)
+-------------------------------------
+import pytest
+from playwright.sync_api import sync_playwright, Page, expect
+
+def test_static(page:Page):
+page.goto("www.amazon.com")
+
+table=page.locator("table[name=book] tbody")
+expect(table).to_be_visible()
+
+rows=table.locator(tr)
+count=rows.count()
+expect(rows).to_have_count(count)
+
+cols=rows.locator(th)
+count=cols.count()
+expect(cols).to_have_count(count)
+
+second=rows.locator(td).nth(2)
+print(second.all_inner_text())
+
+expect(decond.all_inner_text()).to_have_text(['c','java','python'])
+
+for i in second.all_inner_text():
+print(i)
+
+list=rows.all()
+for row in list[1:]:
+author=row.locator(td).all_inner_text()
+print(author)
+
+for row in list[1:]:
+name=row.locator(td).nth(1).inner_text()
+if(name=='suresh'):
+book=row.locator(td).nth(0).inner_text()
+print(book)
+
+total=0
+for row in list[1:]:
+price=row.locator(td).nth(3).inner_text()
+total=total+price
+
+print(total)
+
+
+
+
+DYNAMIC WEB TABLE(EXAMPLES)
+------------------------------------------
+import pytest
+from playwright.sync_api import sync_playwright, Page,expect
+
+def test_dynamic(page:Page):
+page.goto("www.google.com")
+
+table=page.locator(table.table tbody)
+rows=table.locator(tr).all()
+for row in rows:
+name=row.locator(td).nth(0).inner_text()
+if(name=='chrome'):
+load=row.locator("td:has-text('%')").inner_text()
+print(load)
+expect(page.locator("#chrome-cpu")).to_contain_text(load)
+page.wait_for_timeout(4000)
+
+
+
+PAGINATION WEB TABLE(EXAMPLES)
+-----------------------------------------------
+import pytest
+from playwright.sync_api import sync_playwright, Page,expect
+
+def test_pagination(page:Page):
+page.goto("www.amazon.com")
+
+pages=true
+while pages:
+rows=page.locator("#example tbody tr).all()
+for i in rows:
+print(i.inner_text())
+
+next=page.locator("button[arie-label='next']")
+is_disabled=button.get_attribute("class")
+if "disabled" in is_disabled:
+pages=false
+else:
+next.click()
