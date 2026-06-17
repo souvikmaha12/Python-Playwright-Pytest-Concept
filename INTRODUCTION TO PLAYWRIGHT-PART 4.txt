@@ -1,0 +1,136 @@
+INTRODUCTION TO PLAYWRIGHT-PART 4
+---------------------------------------------
+DATE PICKER HANDLING
+-----------------------------
+APPROACH 1
+---------------------------
+import pytest
+from playwrignt.sync_api import sync_playwright, expect,Page
+
+def test_date(page:Page):
+page.goto("www.amazon.com")
+
+date=page.locator("#date")
+date.fill("10/15/2026")
+
+expect(date).to_have_value("10/15/2026")
+page.wait_for_timeout(5000)
+
+APPROACH 2
+----------------------------
+import pytest
+from playwrignt.sync_api import sync_playwright, expect,Page
+
+def select_date(page,target_year, target_month,is_future):
+while True:
+current_month=page.locator("#month").text_content()
+current_year=page.locator("#year").text_content()
+if current_month==target_month and current year==target_year:
+break
+
+if is_future==True:
+page.locator(".date").click()
+else:
+page.locator(".date").click()
+
+
+
+def test_date(page:Page):
+page.goto("www.amazon.com")
+
+date=page.locator("#date")
+
+future=true
+year="2025"
+month="June"
+date="15"
+date.click()
+
+select_date(page,year,month,date,is_future)
+expect(date).to_have_value("10/15/2026")
+page.wait_for_timeout(5000)
+
+
+
+
+
+
+HANDLING DIALOGS AND FRAMES
+---------------------------------------
+APPROACH 1
+------------------------
+import pytest
+from playwright.sync_api import Page, expect,sync_playwright
+
+def test_alert(page:Page):
+page.goto("www.amazon.com")
+
+def handle(dialog):
+  dialog.accept()
+page.on(event:"dialog",handle)
+page.wait_for_timeout(5000)
+page.locator("#alert").click()
+page.wait_for_timeout(5000)
+
+APPROACH 2(BY USING LAMBDA FUNCTION)
+-----------------------------
+
+WHAT IS LABBDA FUNCTION IN PYTHON
+----------------------------------------
+Lambda is a function where we use keyword lambda and store it in variable which is a function.
+
+EXAMPLE
+----------------------
+def sum(a)
+print(a+10)
+sum(100)
+
+But in lambda:
+x=lambda a:a+10
+print(x(100))
+
+x=lambda a,b,c:a+b+c
+print(x(10,20,30))
+
+
+EXAMPLE
+---------------------
+import pytest
+from playwright.sync_api import expect,Page,sync_playwright
+
+def test_alert(page:Page):
+page.goto("www.google.com")
+page.on(event:"dialog", lambda dialog:dialog.accept())//page.on(event:"dialog", lambda dialog:dialog.accept("john"))[This is used for prompt alert]
+page.wait_for_timeout(4000)
+page.locator("#alert").click()
+page.wait_for_timeout(4000)
+
+//To Verify Text
+text=page.locator("#demo")
+print(text)
+
+expect(page.locator("#demo").to_contain_text("john")
+
+
+
+
+
+
+FRAME HANDLING
+---------------------------------
+import pytest
+from playwright.sync_api import sync_playwright, expect,Page
+
+def test_frames(page:Page):
+page.goto("www.amazon.com")
+
+frames=page.frames
+print("count:",len(frames))
+page.wait_for_timeout(4000)
+
+
+#frame1=page.frame_locator("frame[src='frame']")
+#frame1.locator("input[name='text']").fill("Welcome")
+page.wait_for_timeout(5000)
+frame1=page.frame(url='www.frame.com')
+expect(frame1.locator("input[name='text']").fill("Welcome")).to_have_value("welcome")
