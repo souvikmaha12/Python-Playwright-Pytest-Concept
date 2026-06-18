@@ -1,0 +1,187 @@
+INTRODUCTION TO PLAYWRIGHT-PART 5
+------------------------------------------------
+MOUSE HOVER HANDLE
+--------------------------------
+import pytest
+from playwright.sync_api import expect,Page,sync_playwright
+
+def test_mouse(page:Page):
+page.goto("www.amazon.com")
+
+point=page.locator(".dropbtn")
+point.hover()
+
+laptop=page.locator(".dropdown:nth-child(2)")
+laptop.hover()
+
+page.wait_for_timeout(5000)
+
+//Right Click
+
+button=page.locator(".context")
+button.click(button="right")
+page.wait_for_timeout(5000)
+
+
+//Double Click
+
+button=page.locator("btn['o']")
+button.dblclick()
+
+feild2=page.locator("#feild")
+expect(feild2).to_have_value("Hello World")
+
+page.wait_for_timeout(5000)
+
+//Drag And Drop
+
+source=page.locator("#draggable")
+target=page.locator("#droppable")
+
+source.drag_to(target)
+
+page.wait_for_timeout(5000)
+
+
+
+KEYBOARD ACTION
+--------------------------
+APPROACH 1
+------------------------
+
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=False)
+    page = browser.new_page()
+
+    page.goto("https://example.com/form")  # Replace with actual form URL
+
+    # Locators
+    name = page.locator("#name")
+    email = page.locator("#email")
+    password = page.locator("#password")
+    gender = page.locator("#gender")
+    submit = page.locator("#submit")
+
+    # Step 1: Fill Name
+    name.click()
+    name.type("Souvik Mahajan", delay=100)
+
+    # Step 2: Move to Email using TAB
+    name.press("Tab")
+    email.type("souvik@email.com", delay=100)
+
+    # Step 3: Move to Password using TAB
+    email.press("Tab")
+    password.type("Password@123", delay=100)
+
+    # Step 4: Open dropdown & select using keyboard
+    gender.click()
+    gender.press("ArrowDown")  # Navigate options
+    gender.press("ArrowDown")
+    gender.press("Enter")      # Select option
+
+    # Step 5: Submit form using keyboard
+    submit.focus()
+    submit.press("Enter")  # same as clicking submit
+
+    browser.close()
+
+
+
+APPROACH 2
+---------------------------
+page.locator("#name").click()
+
+page.keyboard.type("Souvik")
+page.keyboard.press("Tab")
+page.keyboard.type("souvik@email.com")
+page.keyboard.press("Tab")
+page.keyboard.type("Password123")
+page.keyboard.press("Tab")
+
+# Select dropdown
+page.keyboard.press("ArrowDown")
+page.keyboard.press("Enter")
+
+# Submit
+page.keyboard.press("Enter")
+
+
+
+
+
+COPY-PASTE IN FORM
+----------------------------------
+name.click()
+name.press("Control+A")
+name.press("Control+C")
+
+email.click()
+email.press("Control+V")
+
+
+
+
+FILE UPLOAD
+-------------------------------
+SINGLE FILE
+-----------------
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=False)
+    page = browser.new_page()
+
+    page.goto("https://example.com/upload")
+
+    # Locate file input
+    file_input = page.locator("input[type='file']")
+    
+    # Upload file
+    file_input.set_input_files("PATH\test.txt")
+
+    expect(page.locator("#text")).to_contain_text("tex.txt")
+
+    browser.close()
+
+
+MULTIPLE FILES
+------------------------
+file_input = page.locator("#upload")
+files=["path\resume.pdf","path\photo.jpg"]
+file_input.set_input_files(files)
+
+expect(page.locator("#text")).to_contain_text("tex.txt")
+expect(page.locator("#text")).to_contain_text("tex.txt")
+
+
+
+DOWNLOAD FILES
+-----------------------
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=False)
+
+    # Enable downloads
+    context = browser.new_context(accept_downloads=True)
+    page = context.new_page()
+
+    page.goto("https://example.com/download")
+
+    # Locate download button
+    download_btn = page.locator("text=Download File")
+
+    # Wait for download event
+    with page.expect_download() as download_info:
+        download_btn.click()
+
+    # Get download object
+    download = download_info.value
+
+    # Save file locally
+    download.save_as("downloads\myfile.txt")
+
+    browser.close()
